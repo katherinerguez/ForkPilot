@@ -69,14 +69,22 @@ class GourmetJournal:
         return links
 
     def get_articles(self, url):
-        self.driver.get(url)
-        time.sleep(3)
+        articles = []
+        while url:
+            self.driver.get(url)
+            time.sleep(3)
+            
+            page_content = self.driver.page_source
+            soup = BeautifulSoup(page_content, "html.parser")
 
-        page_content = self.driver.page_source
-        soup = BeautifulSoup(page_content, "html.parser")
+            page_links = [a["href"] for a in soup.select("#primary .posts-wrapper article div.featured-img a") if a.has_attr("href")]
+            #print(f"Página {url}, {len(page_links)} enlaces")
+            articles.extend(page_links)
 
-        articles = soup.select("#primary > div > div > article > div:nth-of-type(1) a")
-        return [article["href"] for article in articles]
+            next_button = soup.select_one("div.pagination-container a.next.page-numbers")
+            url = next_button["href"] if (next_button and next_button.has_attr("href")) else None
+
+        return articles
 
     def extract_content(self, url):
         self.driver.get(url)
