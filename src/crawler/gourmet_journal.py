@@ -50,19 +50,19 @@ class GourmetJournal:
 
     def get_menu_links(self):
         links = []
+        allowed_categories = {"Recetas", "Enoteca", "A Fondo", "Tendencias"} 
         try:
             side_menu = self.driver.find_element(By.XPATH, "/html/body/div[2]/div")
             menu_options = side_menu.find_elements(By.XPATH, '//*[@id="sidemenu-main-menu"]/li')
-
             for option in menu_options:
                 try:
-                    sub_menu = option.find_element(By.CLASS_NAME, "sub-menu")
-                    submenu_links = sub_menu.find_elements(By.TAG_NAME, "a")
-                    links.extend([link.get_attribute("href") for link in submenu_links])
-                except:
                     main_link = option.find_element(By.TAG_NAME, "a")
-                    links.append(main_link.get_attribute("href"))
+                    title = main_link.text.strip()
 
+                    if title in allowed_categories: 
+                        links.append(main_link.get_attribute("href"))
+                except:
+                    pass
         except:
             print("No se pudieron recopilar los links.")
 
