@@ -19,3 +19,11 @@ def remove_headers(text):
 def remove_footer(text):
     text=re.sub(r'\bsection\s*\d+', '', text)
     return re.sub(r'\bgeneral information about project gutenberg\b.*', '', text)
+
+def clean_text(text):
+    text = normalize_unicode(text)
+    text = remove_headers(text)         
+    text = remove_footer(text)
+    text = remove_special_characters(text)
+    text = remove_spaces(text)
+    return text
