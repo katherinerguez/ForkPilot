@@ -141,4 +141,4 @@ class GourmetJournal:
 if __name__ == "__main__": 
     crawler = GourmetJournal()
     data = crawler.run()
-    print(f"Se guardaron {len(data)} articuols en 'saved_articles'.")
+    print(f"Se guardaron {len(data)} articulos en 'saved_articles'.")
