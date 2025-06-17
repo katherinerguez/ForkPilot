@@ -23,3 +23,19 @@ class Recommender:
                 embeddings=[embedding]
             )
             self.seen_docs.update(used_docs)
+            
+    def get_user_embedding(self):
+        user_queries = self.query_store.get(where={"user_id": self.user_id}, include=["metadatas", "embeddings"])
+        if not user_queries["metadatas"]:
+            return None
+
+        recent_embeddings = []
+        for metadata, emb in zip(user_queries["metadatas"], user_queries["embeddings"]):
+            query_date = datetime.fromisoformat(metadata["date"])
+            if (datetime.now() - query_date).days <= self.days_limit:
+                recent_embeddings.append(emb)
+
+        if not recent_embeddings:
+            return None
+
+        return np.mean(recent_embeddings, axis=0)
