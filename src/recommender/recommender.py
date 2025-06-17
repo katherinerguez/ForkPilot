@@ -9,3 +9,17 @@ class Recommender:
         self.n_recommendations = n_recommendations
         self.days_limit = days_limit
         self.seen_docs = set()
+
+    def store_query(self, query, used_docs):
+            embedding = self.query_store._embedding_function.embed_query(query)
+            self.query_store.add_texts(
+                texts=[query],
+                metadatas=[{
+                    "user_id": self.user_id,
+                    "query_text": query,
+                    "date": str(datetime.now()),
+                    "used_docs": ", ".join(used_docs)
+                }],
+                embeddings=[embedding]
+            )
+            self.seen_docs.update(used_docs)
