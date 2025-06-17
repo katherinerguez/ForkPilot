@@ -1,0 +1,9 @@
+numpy
+regex
+selenium
+BeautifulSoup
+langchain 
+langchain-community 
+transformers 
+torch 
+tokenizers
