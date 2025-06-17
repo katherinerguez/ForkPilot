@@ -39,3 +39,31 @@ class Recommender:
             return None
 
         return np.mean(recent_embeddings, axis=0)
+    
+    def recommend(self):
+        user_profile = self.get_user_embedding()
+        if user_profile is None:
+            return []
+
+        all_docs = self.vector_store.similarity_search_by_vector(user_profile.tolist(), k=100)
+        recommendations = []
+        seen_sources = self.seen_docs
+
+        for doc in all_docs:
+            src = doc.metadata.get("source")
+            if src not in seen_sources:
+                similarity = doc.metadata.get("score", None)
+                recommendations.append((doc, similarity))
+            if len(recommendations) >= self.n_recommendations:
+                break
+
+        if len(recommendations) < self.n_recommendations:
+            remaining = self.n_recommendations - len(recommendations)
+            fallback = [
+                (doc, doc.metadata.get("score", None)) for doc in all_docs
+                if doc.metadata.get("source") not in [d.metadata.get("source") for d, _ in recommendations]
+            ][:remaining]
+            recommendations.extend(fallback)
+
+        self.seen_docs.update(doc.metadata["source"] for doc, _ in recommendations)
+        return recommendations
