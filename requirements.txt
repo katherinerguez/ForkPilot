@@ -1,9 +1,14 @@
 numpy
 regex
 selenium
-BeautifulSoup
+beautifulsoup4
 langchain 
 langchain-community 
 transformers 
 torch 
 tokenizers
+dash 
+dash-bootstrap-components
+chromadb
+protobuf>=4.21.6,<4.22
+huggingface-hub
