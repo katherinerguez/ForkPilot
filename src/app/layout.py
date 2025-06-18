@@ -16,8 +16,14 @@ layout = html.Div([
         dbc.Row([
             dbc.Col([
                 html.Div(className="search-section", children=[
-                    dbc.Input(id="user-query", type="text", placeholder="🔍 ¿Qué deseas cocinar hoy?", className="search-bar"),
+                    dbc.Input(
+                        id="user-query", 
+                        type="text", 
+                        placeholder="🔍 ¿Qué deseas cocinar hoy?", 
+                        className="search-bar"
+                    ),
                     dbc.Button("Buscar", id="search-button", className="btn-search"),
+                    html.Div(id="response-container", className="response-container")
                 ])
             ], md=8),
 
@@ -27,13 +33,6 @@ layout = html.Div([
                     html.Ul(id="recommendations-list", className="recommendation-list")
                 ])
             ], md=4)
-        ], justify="center"),
-
-        dbc.Row([
-            dbc.Col([
-                html.Div(id="response-container", className="response-container"),
-                html.Div(id="links-container", className="links-container")
-            ])
-        ])
+        ], justify="center")
     ])
 ])

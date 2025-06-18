@@ -8,7 +8,7 @@ from callbacks import register_callbacks
 from rag import RAG
 
 rag = RAG()
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, "/assets/styles.css" ])
 app.layout = layout
 
 register_callbacks(app, rag)
