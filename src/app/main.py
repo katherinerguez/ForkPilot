@@ -14,4 +14,4 @@ app.layout = layout
 register_callbacks(app, rag)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)
