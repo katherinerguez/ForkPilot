@@ -1,12 +1,45 @@
-# Education-research
-La realización de este proyecto fue por estudiantes de Ciencia de Datos de tercer año de la Universidad de la Habana: Marian Aguilar Tavier y Katherine Rodríguez Rodríguez.
+# 🍽️🤖 Forkpilot: Asistente de Cocina Inteligente
 
->>**Resumen:** Este proyecto aborda sobre cómo los modelos de lenguaje
- complementan a los modelos de recuperación de información mediante la implementación de un RAG que le permita a los usuarios obtener recomendaciones e información gastronómica relevante.
+**Forkpilot** es un asistente de cocina interactivo basado en Generación Aumentada por Recuperación(RAG). Proporciona recetas, recomendaciones y apoyo culinario de forma automatizada e intuitiva y con una interfaz visual amigable.
 
-## Instalación de las dependencias
-Para instalar todas las dependencias necesarias para la ejecución del proyecto, primero debes descargar el proyecto o clonar el repositorio, esto último lo puede hacer desde la consola con el comando:
-``` git clone https://github.com/mariandc18/Education-research```
+---
 
- Después de tener la carpeta del proyecto ejecute en la consola el siguiente comando para instalar todas las dependencias que se utilizan:
- ```pip install -r requirements.txt```
+## 👩‍💻 Autores
+
+- Marian Aguilar Tavier [@mariandc18](https://github.com/mariandc18)
+- Katherine Rodríguez Rodríguez [@katherinerguez](https://github.com/katherinerguez)
+
+---
+
+## 🧩 Problema
+
+    Este proyecto le permite al usuario, conocer sobre la variedad de recetas y técnicas culinarias que existen el mundo de la gastronomía. No solo puede consultar recetas, sino que también puede obtener consejos, así como sugerencias de bebidas, información nutricional, historia de la cocina, etc. 
+
+---
+
+## Requerimientos generales
+
+- Entorno virtual con las dependencias listadas en `requirements.txt`
+Para ello ejecute:
+
+```
+pip install -r requirements.txt
+```
+
+---
+
+## 🚀 Cómo ejecutar el proyecto?
+
+1. Clona el repositorio:
+
+   ```
+   bash
+   git clone https://github.com/mariandc18/forkpilot.git
+   cd forkpilot
+   ```
+
+2. Ejecute:
+
+    ```
+    ./startup.sh
+    ```
