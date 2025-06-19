@@ -23,7 +23,8 @@ layout = html.Div([
                         className="search-bar"
                     ),
                     dbc.Button("Buscar", id="search-button", className="btn-search"),
-                    html.Div(id="response-container", className="response-container")
+                    html.Div(id="response-container", className="response-container"),
+                    html.Div(id="links-container", className="links-container")
                 ])
             ], md=8),
 
