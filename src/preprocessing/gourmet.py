@@ -26,7 +26,7 @@ def restructure_text(text):
     text = re.sub(r"\n\s*\n", "\n", text) 
     return text
 
-def clean_text(text):
+def cleaned_text(text):
     text = clean_promotions(text)
     text = normalize_unicode(text)
     text = remove_social_links(text)
