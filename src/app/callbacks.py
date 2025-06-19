@@ -1,6 +1,5 @@
 from dash.dependencies import Input, Output
 from dash import html
-from dash.dependencies import Input, Output
 
 def register_callbacks(app, rag): 
     @app.callback(
@@ -12,19 +11,25 @@ def register_callbacks(app, rag):
     def generate_response(n_clicks, query):
         if not n_clicks or not query:
             return "", ""
-        
-        context_docs_and_scores = rag.retrieve(query)
-        context_docs = [doc for doc, _ in context_docs_and_scores]
-        response = rag.generate(query, context_docs)
+
+        docs = rag.retrieve(query)
+        response = rag.generate(query)
 
         response_display = html.Div(response, className="response-text")
+
+        unique_docs = {}
+        for doc in docs:
+            uid = doc.metadata.get("id")
+            if uid and uid not in unique_docs:
+                unique_docs[uid] = doc
+
         links_display = [
             html.Div([
-                html.Strong(f"{doc.metadata['title']} - Relevancia: {score:.4f}"),
+                html.Strong(unique_docs[uid].metadata["title"]),
                 html.Br(),
-                html.A("Acceda al artículo aquí", href=doc.metadata['url'], target="_blank", className="link-item")
+                html.A("Acceder a la receta", href=unique_docs[uid].metadata["url"], target="_blank", className="link-item")
             ], className="document-item")
-            for doc, score in context_docs_and_scores
+            for uid in unique_docs
         ]
 
         return response_display, links_display
