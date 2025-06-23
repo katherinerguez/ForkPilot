@@ -12,7 +12,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 def clean_text(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
-def chunk_text(text: str, chunk_size=500, overlap=50):
+def chunk_text(text: str, chunk_size=1000, overlap=200):
+    """
+    Divide el texto en chunks 
+    """
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=chunk_size,
         chunk_overlap=overlap,
@@ -21,35 +24,37 @@ def chunk_text(text: str, chunk_size=500, overlap=50):
     return splitter.split_text(text)
 
 def create_documents_from_recipe(recipe: dict) -> list[Document]:
+    """
+    Crea documentos por receta 
+    """
     metadata = {
         "title": recipe["title"],
         "url": recipe["url"],
         "publication_date": recipe["publication_date"],
         "id": recipe["id"]
     }
-    documents = []
 
     ingredients = clean_text(recipe["ingredients"])
-    if ingredients:
-        for i, chunk in enumerate(chunk_text(ingredients)):
-            documents.append(Document(
-                page_content=chunk,
-                metadata={**metadata, "section": f"ingredients_{i+1}"}
-            ))
-
     steps = [clean_text(s) for s in recipe["steps"] if s.strip()]
     full_steps = " ".join(steps)
-    if full_steps:
-        for i, chunk in enumerate(chunk_text(full_steps)):
-            documents.append(Document(
-                page_content=chunk,
-                metadata={**metadata, "section": f"steps_{i+1}"}
-            ))
 
-    return documents
+    full_text = ""
+    if ingredients:
+        full_text += "Ingredientes:\n" + ingredients + "\n\n"
+    if full_steps:
+        full_text += "Pasos:\n" + full_steps
+
+    if not full_text.strip():
+        return []
+
+    return [Document(page_content=full_text.strip(), metadata=metadata)]
+
 
 class CookpadCrawler:
     def __init__(self, query: str, min_new: int = 10, exclude_ids: set = None):
+        """ 
+        Inicializa crawler para Cookpad
+        """
         self.query = query
         self.min_new = min_new
         self.exclude_ids = exclude_ids or set()
@@ -64,6 +69,9 @@ class CookpadCrawler:
         self.driver = webdriver.Chrome(options=chrome_options)
 
     def search(self):
+        """ 
+        Busca recetas en Cookpad
+        """
         encoded_query = urllib.parse.quote(self.query)
         url = f"https://cookpad.com/es/buscar/{encoded_query}?order=recent"
         self.driver.get(url)
@@ -72,6 +80,9 @@ class CookpadCrawler:
         self.driver.quit()
 
     def scroll_and_collect(self):
+        """ 
+        Recorre la página y extrae recetas
+        """
         seen_links = set()
         collected = 0
         attempts = 10
@@ -125,6 +136,9 @@ class CookpadCrawler:
             attempts -= 1
 
     def extract_recipe(self, url, recipe_id):
+        """ 
+        Extrae la receta del URL
+        """
         try:
             self.driver.get(url)
             WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, "h1")))
@@ -139,8 +153,7 @@ class CookpadCrawler:
 
             ingredients_div = soup.select_one("#ingredients")
             ingredients = ingredients_div.text.strip() if ingredients_div else ""
-            print(ingredients)
-
+            
             steps_ol = soup.select_one("#steps > ol")
             steps = [li.text.strip() for li in steps_ol.find_all("li")] if steps_ol else []
 

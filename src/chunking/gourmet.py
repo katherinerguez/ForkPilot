@@ -5,15 +5,18 @@ from langchain.schema import Document
 import os      
 from gourmet import cleaned_text
 
+#configurando la base de datos de chroma
 vector_store = Chroma(
     collection_name="gastronomia",
     embedding_function=HuggingFaceEmbeddings(model_name="sentence-transformers/distiluse-base-multilingual-cased-v2"),
     persist_directory="./chroma_gastronomy"
 )
 
+#carpeta en la que se encuentra la raw data
 folder_path = "saved_articles"
 documents = []
 
+#cargar los arcivos .txt y limpiarlos
 for file_name in os.listdir(folder_path):
     file_path = os.path.join(folder_path, file_name)
     if file_name.endswith(".txt") and os.path.exists(file_path):
@@ -24,9 +27,11 @@ for file_name in os.listdir(folder_path):
 
 print(f"Se cargaron {len(documents)} documentos correctamente.")
 
+#dividir en chunks
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 split_docs = text_splitter.split_documents(documents)
 
+#insertar en Chroma
 batch_size = 1000
 for i in range(0, len(split_docs), batch_size):
     batch = split_docs[i:i+batch_size]

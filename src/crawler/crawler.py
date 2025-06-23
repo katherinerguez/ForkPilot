@@ -4,12 +4,15 @@ import os
 import json
 import time
 
-class GutenbergScraper:
+class Gutenberg:
     BASE_URL = "https://www.gutenberg.org"
     SAVE_PATH = "./gutemberg_texts/"
     METADATA_FILE = "./gutemberg_texts/metadata.json"
 
     def __init__(self, max_books=None):
+        """
+        Inicializa la clase Gutenberg
+        """
         os.makedirs(self.SAVE_PATH, exist_ok=True)
         self.max_books = max_books
         self.downloaded_books = set([f.replace(".txt", "") for f in os.listdir(self.SAVE_PATH) if f.endswith(".txt")])
@@ -120,5 +123,5 @@ class GutenbergScraper:
         print(f"Descarga completada: {total_downloaded + downloaded_count}/{total_downloaded + self.max_books} libros almacenados.")
 
 if __name__ == "__main__":
-    scraper = GutenbergScraper(max_books=760)  
+    scraper = Gutenberg(max_books=760)  
     scraper.run()
