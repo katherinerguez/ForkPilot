@@ -10,6 +10,10 @@ from selenium.webdriver.chrome.options import Options
  
 class GourmetJournal:
     def __init__(self):
+        """
+        Inicializa la clase y configura la URL base, rutas de salida, 
+        carga artículos guardados.
+        """
         self.base_url = "https://www.thegourmetjournal.com/"
         self.articles = []
         self.output_folder = "saved_articles"
@@ -23,6 +27,10 @@ class GourmetJournal:
         self.driver = webdriver.Chrome(options=self.chrome_options)
 
     def _load_json(self):
+        """
+        Carga los artículos guardados en el json.
+        Si no existe, crea un diccionario vacío.
+        """  
         if os.path.exists(self.json_path):
             with open(self.json_path, "r", encoding="utf-8") as f:
                 self.saved_articles = json.load(f)
@@ -30,6 +38,9 @@ class GourmetJournal:
             self.saved_articles = {}
 
     def open_page(self):
+        """
+        Abre la página principal del sitio web y cierra posibles ventanas emergentes.
+        """
         self.driver.get(self.base_url)
         time.sleep(3)
 
@@ -41,6 +52,9 @@ class GourmetJournal:
             pass
 
     def open_main_menu(self):
+        """
+        Abre el menú principal del sitio web.
+        """
         try:
             menu_button = self.driver.find_element(By.XPATH, '//*[@id="masthead"]/div[2]/div/div[4]/button')
             menu_button.click()
@@ -49,6 +63,9 @@ class GourmetJournal:
             print("No se pudo acceder al main menu.")
 
     def get_menu_links(self):
+        """ 
+        Obtiene los enlaces del menú principal.
+        """
         links = []
         allowed_categories = {"Recetas", "Enoteca", "A Fondo", "Tendencias"} 
         try:
@@ -69,6 +86,9 @@ class GourmetJournal:
         return links
 
     def get_articles(self, url):
+        """
+        Obtiene los artículos de una página específica.
+        """
         articles = []
         while url:
             self.driver.get(url)
@@ -87,6 +107,9 @@ class GourmetJournal:
         return articles
 
     def extract_content(self, url):
+        """
+        Obtiene el contenido de un artículo.
+        """
         self.driver.get(url)
         time.sleep(2)
         soup = BeautifulSoup(self.driver.page_source, "html.parser")
@@ -124,6 +147,9 @@ class GourmetJournal:
         return article
 
     def run(self):
+        """
+        Inicia la busqueda y recopilación de artículos.
+        """
         self.open_page()
         self.open_main_menu()
         categories = self.get_menu_links()
