@@ -1,4 +1,4 @@
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 from dash import html
 
 def register_callbacks(app, rag): 
@@ -6,15 +6,25 @@ def register_callbacks(app, rag):
         [Output("response-container", "children"),
          Output("links-container", "children")],
         [Input("search-button", "n_clicks")],
-        [Input("user-query", "value")]
+        [State("user-query", "value")]
     )
     def generate_response(n_clicks, query):
+        """
+        Responde a la consulta del usuario y le proporciona los enlaces de los documentos 
+        que utilizo para la respuesta
+            
+            n_clicks (int): Clics en el botón de búsqueda.
+            query (str): Consulta ingresada por el usuario.
+
+        Devuelve:
+            tuple:
+                - html.Div: Contenedor con la respuesta generada.
+                - list[html.Div]: Lista de enlaces a los documentos fuente únicos.
+        """
         if not n_clicks or not query:
             return "", ""
 
-        docs = rag.retrieve(query)
-        response = rag.generate(query)
-
+        response, docs = rag.generate(query)
         response_display = html.Div(response, className="response-text")
 
         unique_docs = {}
@@ -29,7 +39,7 @@ def register_callbacks(app, rag):
                 html.Br(),
                 html.A("Acceder a la receta", href=unique_docs[uid].metadata["url"], target="_blank", className="link-item")
             ], className="document-item")
-            for uid in unique_docs
+            for uid in unique_docs.values()
         ]
 
         return response_display, links_display
